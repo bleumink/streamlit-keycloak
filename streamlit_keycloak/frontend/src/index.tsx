@@ -96,9 +96,9 @@ const authenticate = async (
 
   // Check if user is already logged in
   let authenticated = await keycloak.init({
+    ...initOptions,
     onLoad: "check-sso",
     silentCheckSsoRedirectUri: rewritePage("/check-sso.html"),
-    ...initOptions,
   })
 
   if (!authenticated) {

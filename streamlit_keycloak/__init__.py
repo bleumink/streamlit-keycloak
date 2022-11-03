@@ -54,13 +54,19 @@ def keycloak(
     init_options: Optional[dict] = None,
     key: str = None,
 ) -> UserInfo:
-    """Create a new instance of "keycloak".
+    """Creates a new Keycloak component.
 
     Parameters
     ----------
-    name: str
-        The name of the thing we're saying hello to. The component will display
-        the text "Hello, {name}!"
+    url: str
+        URL of the Keycloak server.
+    realm: str
+        Realm to authenticate with.
+    client_id: str
+        Client ID to authenticate with.
+    init_options: dict
+        Initialization options for Keycloak. These are passed on the init function
+        in the frontend. See keycloak-js documentation for details.
     key: str or None
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will
@@ -68,10 +74,8 @@ def keycloak(
 
     Returns
     -------
-    int
-        The number of times the component's "Click Me" button has been clicked.
-        (This is the value passed to `Streamlit.setComponentValue` on the
-        frontend.)
+    UserInfo
+        A namedtuple containing authentication state, the OAuth2 token and user information.
 
     """
     # Call through to our private component function. Arguments we pass here

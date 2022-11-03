@@ -1,4 +1,4 @@
-from streamlit_keycloak_component import keycloak
+from streamlit_keycloak import keycloak
 import streamlit as st
 
 st.title("Keycloak example")
