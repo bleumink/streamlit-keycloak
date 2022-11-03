@@ -29,7 +29,7 @@ const openPopup = (url: string): Window => {
 }
 
 const runPopup = async (popup: Window): Promise<Record<string, string>> => {
-  return new Promise<any>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // Throw exception if popup is closed manually
     const popupTimer = setInterval(() => {
       if (popup.closed) {
