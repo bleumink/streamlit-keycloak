@@ -22,7 +22,7 @@ const openPopup = (url: string): Window => {
   )
 
   if (!popup) {
-    throw new Error("Unable to popup authentication popup")
+    throw new Error("Unable to open authentication popup")
   }
 
   return popup
@@ -62,7 +62,6 @@ const setComponentValue = async (): Promise<void> => {
   }
 
   let value
-
   if (keycloak.authenticated) {
     value = [true, keycloak.token, keycloak.userInfo]
   } else {

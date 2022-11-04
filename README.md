@@ -15,21 +15,25 @@ The component returns a tuple containing the authentication state, OAuth2 token 
 from streamlit_keycloak import keycloak
 import streamlit as st
 
-st.title("Keycloak example")
-user_info = keycloak(
+
+def main():
+    st.subheader(f"Welcome {user_info['preferred_username']}!")
+    st.write(f"Here is your OAuth2 token: ${token}")
+
+
+authenticated, token, user_info = keycloak(
     url="http://localhost:8080",
     realm="myrealm",
     client_id="myclient",
-    init_options={
-        "checkLoginIframe": False
-    }
 )
 
-if user_info.authenticated:
-    st.write(user_info)
+st.title("Streamlit Keycloak example")
+
+if authenticated:
+    main()
 
 else:
-    st.write("Not authenticated yet")
+    st.write("Authenticating...")
 ```
 
 ## TODO
