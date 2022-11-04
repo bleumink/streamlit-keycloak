@@ -112,9 +112,11 @@ const authenticate = async (
   }
 
   // Check every 15 seconds if token is within 30 seconds of expiring
-  setInterval(() => {
-    keycloak.updateToken(30)
-  }, 15000)
+  if (keycloak.refreshToken) {
+    setInterval(() => {
+      keycloak.updateToken(30)
+    }, 15000)
+  }
 }
 
 /**

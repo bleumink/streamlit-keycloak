@@ -18,7 +18,7 @@ import streamlit as st
 
 def main():
     st.subheader(f"Welcome {user_info['preferred_username']}!")
-    st.write(f"Here is your OAuth2 token: ${token}")
+    st.write(f"Here is your OAuth2 token: {token}")
 
 
 authenticated, token, user_info = keycloak(
@@ -35,7 +35,7 @@ if authenticated:
 else:
     st.write("Authenticating...")
 ```
-
+![streamlit-keycloak showcase|639x663](example.gif?raw=true)
 ## TODO
 - Logout functionality?
 - Behaviour on refresh might not be desirable?
