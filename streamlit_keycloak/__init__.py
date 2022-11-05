@@ -52,7 +52,7 @@ def keycloak(
     realm: str,
     client_id: str,
     init_options: Optional[dict] = None,
-    key: str = None,
+    key: Optional[str] = None,
 ) -> UserInfo:
     """Creates a new Keycloak component.
 
@@ -64,7 +64,7 @@ def keycloak(
         Realm to authenticate with.
     client_id: str
         Client ID to authenticate with.
-    init_options: dict
+    init_options: dict or None
         Initialization options for Keycloak. These are passed on the init function
         in the frontend. See keycloak-js documentation for details.
     key: str or None
