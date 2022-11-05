@@ -84,7 +84,7 @@ const authenticate = async (
   realm: string,
   clientId: string,
   initOptions: KeycloakInitOptions = {}
-) => {
+): Promise<void> => {
   keycloak = new Keycloak({
     url: url,
     realm: realm,
