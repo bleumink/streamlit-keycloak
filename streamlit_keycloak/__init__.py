@@ -51,6 +51,7 @@ def keycloak(
     url: str,
     realm: str,
     client_id: str,
+    auto_refresh: bool = True,
     init_options: Optional[dict] = None,
     key: Optional[str] = None,
 ) -> UserInfo:
@@ -64,9 +65,12 @@ def keycloak(
         Realm to authenticate with.
     client_id: str
         Client ID to authenticate with.
+    auto_refresh: bool
+        Automatically refresh the access token when it expires.
+        This rerenders the app. Defaults to true.
     init_options: dict or None
-        Initialization options for Keycloak. These are passed on the init function
-        in the frontend. See keycloak-js documentation for details.
+        Optionally set initialization options for Keycloak. These are passed on to 
+        the init function in the frontend. See keycloak-js documentation for details.
     key: str or None
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will
@@ -90,6 +94,7 @@ def keycloak(
         url=url,
         realm=realm,
         clientId=client_id,
+        autoRefresh=auto_refresh,
         initOptions=init_options,
         key=key,
         default=default,

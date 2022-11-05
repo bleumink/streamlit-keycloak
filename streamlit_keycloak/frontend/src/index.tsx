@@ -5,7 +5,7 @@ import type { KeycloakInitOptions } from "keycloak-js"
 const rewritePage = (newPage: string): string => {
   return (
     window.location.origin +
-    window.location.pathname.replace(/\/[^\/]*$/, newPage)
+    window.location.pathname.replace(/\/[^/]*$/, newPage)
   )
 }
 
@@ -72,17 +72,22 @@ const setComponentValue = async (): Promise<void> => {
 }
 
 // Set up Keycloak events listeners to send state to Steamlit
-const setKeycloakEventListeners = (): void => {
+const setKeycloakEventListeners = (autoRefresh: boolean): void => {
   keycloak.onAuthError = async () => await setComponentValue()
   keycloak.onAuthRefreshError = async () => await setComponentValue()
   keycloak.onAuthSuccess = async () => await setComponentValue()
-  keycloak.onAuthRefreshSuccess = async () => await setComponentValue()
+  keycloak.onAuthRefreshSuccess = async () => await setComponentValue()  
+  keycloak.onTokenExpired = async () => {
+    if (!autoRefresh || !keycloak.refreshToken) return
+    await keycloak.updateToken(10)
+  }
 }
 
 const authenticate = async (
   url: string,
   realm: string,
   clientId: string,
+  autoRefresh: boolean = true,
   initOptions: KeycloakInitOptions = {}
 ): Promise<void> => {
   keycloak = new Keycloak({
@@ -91,7 +96,7 @@ const authenticate = async (
     clientId: clientId,
   })
 
-  setKeycloakEventListeners()
+  setKeycloakEventListeners(autoRefresh)
 
   // Check if user is already logged in
   let authenticated = await keycloak.init({
@@ -110,13 +115,6 @@ const authenticate = async (
     await runPopup(popup)
     await keycloak.login()
   }
-
-  // Check every 15 seconds if token is within 30 seconds of expiring
-  if (keycloak.refreshToken) {
-    setInterval(() => {
-      keycloak.updateToken(30)
-    }, 15000)
-  }
 }
 
 /**
@@ -128,9 +126,9 @@ const onRender = (event: Event): void => {
   if (keycloak?.authenticated) return
 
   const data = (event as CustomEvent<RenderData>).detail
-  const { url, realm, clientId, initOptions } = data.args
+  const { url, realm, clientId, autoRefresh, initOptions } = data.args
 
-  authenticate(url, realm, clientId, initOptions)
+  authenticate(url, realm, clientId, autoRefresh, initOptions)
 }
 
 let keycloak: Keycloak
