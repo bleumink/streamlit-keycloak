@@ -1,14 +1,13 @@
 # Streamlit Keycloak
-**Keycloak authentication inside your Streamlit app**
+**Keycloak user authentication and single sign-on inside your Streamlit app**
 
 ## Installation
 `pip install streamlit-keycloak`
 
 ## Usage
-Creating a Keycloak component will perform authentication when the app is rendered.
-Credentials can be provided in the popup window. Outside of a SSO environment, you must allow popups to be able to log in.
+Simply create the Keycloak component and it will perform the authentication when the app is rendered. First it will attempt to silently authenticate using single sign-on. If this fails, the component will open a popup where you can provide your credentials. (Note: so you must allow popups for this to work)
 
-The component returns a tuple containing the authentication state, OAuth2 token and user info respectively. If a refresh token is present, tokens are refreshed automatically. This will rerender the app.
+When authentication is successful, the component returns a tuple containing the authentication state, an access token, which can be used to access other restricted resources, and a user info object, containing e.g. the username and groups. If your configuration provides refresh tokens, the access token will automatically be refreshed when it expires, which will also rerender your app.
 
 ## Example
 ```python
