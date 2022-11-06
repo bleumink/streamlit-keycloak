@@ -35,7 +35,7 @@ if authenticated:
 else:
     st.write("Authenticating...")
 ```
-![streamlit-keycloak showcase|639x663](example.gif?raw=true)
-## TODO
+![streamlit-keycloak showcase|639x663](https://github.com/bleumink/streamlit-keycloak/blob/master/example.gif?raw=true)
+
+## Todo
 - Logout functionality?
-- Behaviour on refresh might not be desirable?
