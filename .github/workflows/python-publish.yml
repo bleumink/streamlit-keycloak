@@ -29,7 +29,7 @@ jobs:
           
       - name: Build
         run: |
-          npm install
+          npm install --prefix streamlit_keycloak/frontend
           npm run build --prefix streamlit_keycloak/frontend
           
       - name: Upload a Build Artifact
