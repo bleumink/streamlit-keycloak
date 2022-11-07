@@ -57,7 +57,7 @@ const runPopup = async (popup: Window): Promise<Record<string, string>> => {
 
 // Set up the response to Streamlit
 const setComponentValue = async (): Promise<void> => {
-  if (!keycloak.userInfo) {
+  if (!keycloak.userInfo && keycloak.authenticated) {
     await keycloak.loadUserInfo()
   }
 

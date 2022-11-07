@@ -7,7 +7,7 @@
 ## Usage
 Provide the URL to your Keycloak server, the realm and client and the component will perform the authentication when the app is rendered. First it will attempt to silently authenticate using single sign-on. If this fails, the component will open a popup to the Keycloak login page (note: so you must allow popups for this to work).
 
-When authentication is successful, the component returns a dataclass containing the authentication state, an access token, which can be used to access other restricted resources, a refresh token and a user info object, containing e.g. the username and group memberships. If your configuration provides refresh tokens, the access token can be automatically refreshed when they expire.
+When authentication is successful, the component returns a dataclass containing the authentication state, an access token, which can be used to access other restricted resources, a refresh token and a user info object, containing e.g. the username and group memberships. If your configuration provides refresh tokens, the access token can be automatically refreshed when it expires.
 
 So far the component has not been tested in a wide variety of environments. So if you’re also using Keycloak and would benefit from less logging in and easy access to tokens, give this a go and share your experience. Feedback is always welcome.
 
