@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="streamlit-keycloak",
-    version="0.1.4",
+    version="0.1.5",
     author="Gideon Bleumink",
     author_email="",
     description="Keycloak authentication for Streamlit",
@@ -13,7 +13,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=[
         # By definition, a Custom Component depends on Streamlit.
         # If your component has other Python dependencies, list

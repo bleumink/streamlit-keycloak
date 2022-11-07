@@ -1,9 +1,16 @@
 import os
 import streamlit.components.v1 as components
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import Optional
 
-UserInfo = namedtuple("UserInfo", ["authenticated", "token", "user_info"])
+
+@dataclass
+class Keycloak:
+    authenticated: bool
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
+    user_info: Optional[dict] = None
+
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
 # the component, and True when we're ready to package and distribute it.
@@ -47,15 +54,15 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def keycloak(
+def login(
     url: str,
     realm: str,
     client_id: str,
     auto_refresh: bool = True,
     init_options: Optional[dict] = None,
     key: Optional[str] = None,
-) -> UserInfo:
-    """Creates a new Keycloak component.
+) -> Keycloak:
+    """Creates a new Keycloak component and authenticates.
 
     Parameters
     ----------
@@ -69,7 +76,7 @@ def keycloak(
         Automatically refresh the access token when it expires.
         This rerenders the app. Defaults to true.
     init_options: dict or None
-        Optionally set initialization options for Keycloak. These are passed on to 
+        Optionally set initialization options for Keycloak. These are passed on to
         the init function in the frontend. See keycloak-js documentation for details.
     key: str or None
         An optional key that uniquely identifies this component. If this is
@@ -79,7 +86,7 @@ def keycloak(
     Returns
     -------
     UserInfo
-        A namedtuple containing authentication state, the OAuth2 token and user information.
+        A dataclass containing authentication state, access token, refresh token and user information.
 
     """
     # Call through to our private component function. Arguments we pass here
@@ -89,7 +96,7 @@ def keycloak(
     # "default" is a special argument that specifies the initial return
     # value of the component before the user has interacted with it.
 
-    default = [False, None, None]
+    default = {"authenticated": False}
     user_info = _keycloak_component(
         url=url,
         realm=realm,
@@ -100,7 +107,7 @@ def keycloak(
         default=default,
     )
 
-    return UserInfo(*user_info)
+    return Keycloak(**user_info)
 
 
 # Add some test code to play with the component while it's in development.
@@ -111,11 +118,11 @@ if not _RELEASE:
 
     st.subheader("Authenticate with Keycloak")
 
-    user_info = keycloak(
+    keycloak = login(
         "http://localhost:8080",
         "myrealm",
         "myclient",
         init_options={"checkLoginIframe": False},
     )
 
-    st.write(user_info)
+    st.write(keycloak)

@@ -63,9 +63,14 @@ const setComponentValue = async (): Promise<void> => {
 
   let value
   if (keycloak.authenticated) {
-    value = [true, keycloak.token, keycloak.userInfo]
+    value = {
+      authenticated: true,
+      access_token: keycloak.token,
+      refresh_token: keycloak.refreshToken,
+      user_info: keycloak.userInfo,
+    }
   } else {
-    value = [false, null, null]
+    value = { authenticated: false }
   }
 
   Streamlit.setComponentValue(value)
@@ -76,7 +81,7 @@ const setKeycloakEventListeners = (autoRefresh: boolean): void => {
   keycloak.onAuthError = async () => await setComponentValue()
   keycloak.onAuthRefreshError = async () => await setComponentValue()
   keycloak.onAuthSuccess = async () => await setComponentValue()
-  keycloak.onAuthRefreshSuccess = async () => await setComponentValue()  
+  keycloak.onAuthRefreshSuccess = async () => await setComponentValue()
   keycloak.onTokenExpired = async () => {
     if (!autoRefresh || !keycloak.refreshToken) return
     await keycloak.updateToken(10)
