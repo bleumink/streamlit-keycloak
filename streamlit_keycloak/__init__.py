@@ -85,7 +85,7 @@ def login(
 
     Returns
     -------
-    UserInfo
+    Keycloak
         A dataclass containing authentication state, access token, refresh token and user information.
 
     """
@@ -97,7 +97,7 @@ def login(
     # value of the component before the user has interacted with it.
 
     default = {"authenticated": False}
-    user_info = _keycloak_component(
+    keycloak = _keycloak_component(
         url=url,
         realm=realm,
         clientId=client_id,
@@ -107,7 +107,7 @@ def login(
         default=default,
     )
 
-    return Keycloak(**user_info)
+    return Keycloak(**keycloak)
 
 
 # Add some test code to play with the component while it's in development.

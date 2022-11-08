@@ -42,6 +42,7 @@ const runPopup = async (popup: Window): Promise<Record<string, string>> => {
 
     // Wait for postMessage from popup if login is successful
     const popupEventListener = function (event: MessageEvent): void {
+      if (event.origin !== window.location.origin) return
       if (!Object.keys(event.data).includes("code")) return
 
       window.removeEventListener("message", popupEventListener, false)

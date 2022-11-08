@@ -6,7 +6,7 @@
     <body>
         <script>            
             const hashParams = new URLSearchParams(window.location.hash.substring(1))                        
-            opener.postMessage(Object.fromEntries(hashParams.entries()), location.origin)
+            window.opener.postMessage(Object.fromEntries(hashParams.entries()), window.opener.location.origin)
         </script>
     </body>
 </html>
