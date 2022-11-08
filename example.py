@@ -11,6 +11,3 @@ keycloak = login(
 
 if keycloak.authenticated:
     st.write(keycloak)
-
-else:
-    st.write("Not authenticated yet")
