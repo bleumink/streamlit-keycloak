@@ -37,8 +37,7 @@ if keycloak.authenticated:
 ```
 ![streamlit-keycloak showcase|639x663](https://github.com/bleumink/streamlit-keycloak/blob/master/example.gif?raw=true)
 
-## Todo
-- Logout functionality?
-
 ## Credits
 Many thanks to the authors of the [streamlit-auth0](https://github.com/conradbez/streamlit-auth0) and [auth0-spa-js](https://github.com/auth0/auth0-spa-js) packages for inspiring a large part of the approach.
+
+And thanks to 93degree for the [Svelte component template](https://github.com/93degree/streamlit-component-svelte-template), which is awesome.
