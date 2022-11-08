@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Streamlit, setStreamlitLifecycle } from "./streamlit"
-  import { onMount } from "svelte"
+  import { onMount } from "svelte"  
 
   import Keycloak from "keycloak-js"
   import type {KeycloakInitOptions} from "keycloak-js"
@@ -33,7 +33,7 @@
     )
 
     if (!popup) {
-      throw new Error("Unable to open authentication popup")
+      throw new Error("Unable to open authentication popup. Popups must be allowed to log in.")
     }
 
     return popup
@@ -46,10 +46,18 @@
         if (popup.closed) {
           window.removeEventListener("message", popupEventListener, false)
           clearInterval(popupTimer)
+          clearTimeout(timeoutId)
 
-          reject(new Error("Authentication popup was closed"))
+          reject(new Error("Authentication popup was closed manually."))
         }
       }, 1000)
+
+      const timeoutId = setTimeout(() => {
+        window.removeEventListener("message", popupEventListener, false)
+        clearInterval(popupTimer)
+
+        reject(new Error("Login took too long. Refresh the page to try again."))
+      }, 300_000)
 
       // Wait for postMessage from popup if login is successful
       const popupEventListener = function (event: MessageEvent): void {
@@ -58,6 +66,7 @@
 
         window.removeEventListener("message", popupEventListener, false)
         clearInterval(popupTimer)
+        clearTimeout(timeoutId)
 
         popup.close()
         resolve(event.data)
@@ -132,13 +141,13 @@
   
   let keycloak: Keycloak
   let authenticated = false
-  let initialized = false
+  let initialized = false    
 </script>
 
 {#if initialized && !authenticated}
-  {#await loginWithPopup()}
-    <span>Provide credentials to log in</span>
-  {:catch error} 
-    <span>{error}</span>
+  {#await loginWithPopup()}    
+  <div class="alert alert-primary">Please provide credentials to log in.</div>    
+  {:catch error}
+    <div class="alert alert-danger">{error.message}</div>    
   {/await}  
 {/if}
