@@ -42,3 +42,6 @@ else:
 
 ## Todo
 - Logout functionality?
+
+## Credits
+Many thanks to the authors of the [streamlit-auth0](https://github.com/conradbez/streamlit-auth0) and [auth0-spa-js](https://github.com/auth0/auth0-spa-js) packages for inspiring a large part of the approach.
