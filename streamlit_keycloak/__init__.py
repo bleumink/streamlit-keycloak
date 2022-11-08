@@ -16,7 +16,7 @@ class Keycloak:
 # the component, and True when we're ready to package and distribute it.
 # (This is, of course, optional - there are innumerable ways to manage your
 # release process.)
-_RELEASE = True
+_RELEASE = False
 
 # Declare a Streamlit component. `declare_component` returns a function
 # that is used to create instances of the component. We're naming this
@@ -38,14 +38,14 @@ if not _RELEASE:
         # Pass `url` here to tell Streamlit that the component will be served
         # by the local dev server that you run via `npm run start`.
         # (This is useful while your component is in development.)
-        url="http://localhost:3001",
+        url="http://localhost:5000",
     )
 else:
     # When we're distributing a production version of the component, we'll
     # replace the `url` param with `path`, and point it to to the component's
     # build directory:
     parent_dir = os.path.dirname(os.path.abspath(__file__))
-    build_dir = os.path.join(parent_dir, "frontend/build")
+    build_dir = os.path.join(parent_dir, "frontend/public")
     _keycloak_component = components.declare_component("keycloak", path=build_dir)
 
 
