@@ -1,1 +1,1 @@
-recursive-include streamlit_keycloak/frontend/build *
+recursive-include streamlit_keycloak/frontend/public *
