@@ -34,9 +34,6 @@ st.title("Streamlit Keycloak example")
 
 if keycloak.authenticated:
     main()
-
-else:
-    st.write("Authenticating...")
 ```
 ![streamlit-keycloak showcase|639x663](https://github.com/bleumink/streamlit-keycloak/blob/master/example.gif?raw=true)
 
