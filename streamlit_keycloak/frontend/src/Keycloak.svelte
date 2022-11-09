@@ -21,8 +21,8 @@
   }
 
   const createLoginPopup = (): void => {
-    if (popup && !popup.closed) {
-      popup.focus()
+    if (currentPopup && !currentPopup.closed) {
+      currentPopup.focus()
       return
     }
     
@@ -31,6 +31,8 @@
         redirectUri: rewritePage("/login.html"),
       })
     )    
+
+    showPopup = true
   }
 
   const openPopup = (url: string): void => {
@@ -39,18 +41,18 @@
     const left = window.screenX + (window.innerWidth - width) / 2
     const top = window.screenY + (window.innerHeight - height) / 2
 
-    popup = window.open(
+    currentPopup = window.open(
       url,
       "keycloak:authorize:popup",
       `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`
     )
   }
 
-  const runPopup = async (): Promise<Record<string, string>> => {
+  const runPopup = async (popup: Window): Promise<Record<string, string>> => {
     return new Promise((resolve, reject) => {
       // Throw exception if popup is closed manually
       const popupTimer = setInterval(() => {
-        if (popup?.closed) {
+        if (popup.closed) {
           window.removeEventListener("message", popupEventListener, false)
           clearInterval(popupTimer)
 
@@ -66,25 +68,12 @@
         window.removeEventListener("message", popupEventListener, false)
         clearInterval(popupTimer)
 
-        popup?.close()
+        popup.close()
         resolve(event.data)
-      }
-
-      if (!popup) {
-        reject(
-          new Error(
-            "Unable to open the authentication popup. Allow popups and refresh the page to proceed."
-          )
-        )
       }
 
       window.addEventListener("message", popupEventListener)
     })
-  }
-
-  const loginWithPopup = async () => {
-    await runPopup()
-    await keycloak.login()
   }
 
   // Set up the response to Streamlit
@@ -120,6 +109,17 @@
     }
   }
 
+  const authenticateWithPopup = async (popup: Window | null): Promise<void> => {
+    if (!popup) {
+      throw new Error(
+        "Unable to open the authentication popup. Allow popups and refresh the page to proceed."
+      )        
+    }
+
+    await runPopup(popup)
+    await keycloak.login()
+  }
+
   const authenticate = async (): Promise<boolean> => {
     keycloak = new Keycloak({
       url: url,
@@ -142,7 +142,8 @@
   })
 
   let keycloak: Keycloak
-  let popup: Window | null
+  let currentPopup: Window | null
+  let showPopup = false
 </script>
 
 {#await authenticate() then authenticated}
@@ -152,12 +153,10 @@
         <span>Sign in</span>
       </button>
       <span class="mx-3">Please sign in to your account.</span>
-      {#if popup}
-        {#key popup}
-          {#await loginWithPopup() catch error}
-            <div class="alert alert-danger mt-3 mb-0">{error.message}</div>
-          {/await}
-        {/key}
+      {#if showPopup}
+        {#await authenticateWithPopup(currentPopup) catch error}
+          <div class="alert alert-danger mt-3 mb-0">{error.message}</div>
+        {/await}
       {/if}
     </div>
   {/if}
