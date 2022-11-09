@@ -23,8 +23,8 @@ def main():
     st.subheader(f"Welcome {keycloak.user_info['preferred_username']}!")
     st.write(f"Here is your OAuth2 token: {keycloak.access_token}")
 
-st.title("Streamlit Keycloak example")
 
+st.title("Streamlit Keycloak example")
 keycloak = login(
     url="http://localhost:8080",
     realm="myrealm",

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Streamlit, setStreamlitLifecycle } from "./streamlit"
-  import { onMount } from "svelte"  
+  import { afterUpdate, onMount } from "svelte"
 
   import Keycloak from "keycloak-js"
-  import type {KeycloakInitOptions} from "keycloak-js"
-  
+  import type { KeycloakInitOptions } from "keycloak-js"
+
   setStreamlitLifecycle()
 
   export let url: string
@@ -20,30 +20,37 @@
     )
   }
 
-  const openPopup = (url: string): Window => {
+  const createLoginPopup = (): void => {
+    if (popup && !popup.closed) {
+      popup.focus()
+      return
+    }
+    
+    openPopup(
+      keycloak.createLoginUrl({
+        redirectUri: rewritePage("/login.html"),
+      })
+    )    
+  }
+
+  const openPopup = (url: string): void => {
     const width = 400
     const height = 600
     const left = window.screenX + (window.innerWidth - width) / 2
     const top = window.screenY + (window.innerHeight - height) / 2
 
-    const popup = window.open(
+    popup = window.open(
       url,
       "keycloak:authorize:popup",
       `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`
-    )    
-    
-    if (!popup) {
-      throw new Error("Unable to open the authentication popup. Allow popups and refresh the page to proceed.")
-    }
-    
-    return popup
+    )
   }
 
-  const runPopup = async (popup: Window): Promise<Record<string, string>> => {
+  const runPopup = async (): Promise<Record<string, string>> => {
     return new Promise((resolve, reject) => {
       // Throw exception if popup is closed manually
       const popupTimer = setInterval(() => {
-        if (popup.closed) {
+        if (popup?.closed) {
           window.removeEventListener("message", popupEventListener, false)
           clearInterval(popupTimer)
 
@@ -59,12 +66,25 @@
         window.removeEventListener("message", popupEventListener, false)
         clearInterval(popupTimer)
 
-        popup.close()
+        popup?.close()
         resolve(event.data)
+      }
+
+      if (!popup) {
+        reject(
+          new Error(
+            "Unable to open the authentication popup. Allow popups and refresh the page to proceed."
+          )
+        )
       }
 
       window.addEventListener("message", popupEventListener)
     })
+  }
+
+  const loginWithPopup = async () => {
+    await runPopup()
+    await keycloak.login()
   }
 
   // Set up the response to Streamlit
@@ -100,18 +120,7 @@
     }
   }
 
-  const loginWithPopup = async () => {
-    // If not authenticated, open the popup and have it set cookies
-    const loginUrl = keycloak.createLoginUrl({
-      redirectUri: rewritePage("/login.html"),
-    })
-
-    const popup = openPopup(loginUrl)
-    await runPopup(popup)
-    await keycloak.login()
-  }
-
-  onMount(async () => {
+  const authenticate = async (): Promise<boolean> => {
     keycloak = new Keycloak({
       url: url,
       realm: realm,
@@ -121,24 +130,40 @@
     setKeycloakEventListeners(autoRefresh)
 
     // Check if user is already logged in
-    authenticated = await keycloak.init({
+    return await keycloak.init({
       ...initOptions,
       onLoad: "check-sso",
       silentCheckSsoRedirectUri: rewritePage("/check-sso.html"),
-    })    
+    })
+  }
 
-    initialized = true    
+  afterUpdate(async () => {
+    Streamlit.setFrameHeight(200)
   })
-  
+
   let keycloak: Keycloak
-  let authenticated = false
-  let initialized = false    
+  let popup: Window | null
 </script>
 
-{#if initialized && !authenticated}
-  {#await loginWithPopup()}    
-    <div class="alert alert-primary">Please provide your credentials to log in.</div>    
-  {:catch error}
-    <div class="alert alert-danger">{error.message}</div>    
-  {/await}  
-{/if}
+{#await authenticate() then authenticated}
+  {#if !authenticated}
+    <div class="alert alert-warning">
+      <button type="button" class="btn btn-primary" on:click={createLoginPopup}>
+        <span>Sign in</span>
+      </button>
+      <span class="mx-3">Please sign in to your account.</span>
+      {#if popup}
+        {#key popup}
+          {#await loginWithPopup() catch error}
+            <div class="alert alert-danger mt-3 mb-0">{error.message}</div>
+          {/await}
+        {/key}
+      {/if}
+    </div>
+  {/if}
+{:catch}
+  <div class="alert alert-danger">
+    <span
+      >Unable to authenticate with Keycloak using the current configuration.</span>
+  </div>
+{/await}
