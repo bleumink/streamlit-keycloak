@@ -1,9 +1,12 @@
 <script lang="ts">
+  import LoginDialog from "./LoginDialog.svelte"
+
   import { Streamlit, setStreamlitLifecycle } from "./streamlit"
-  import { afterUpdate, onMount } from "svelte"
+  import { afterUpdate } from "svelte"
 
   import Keycloak from "keycloak-js"
   import type { KeycloakInitOptions } from "keycloak-js"
+  
 
   setStreamlitLifecycle()
 
@@ -20,60 +23,10 @@
     )
   }
 
-  const createLoginPopup = (): void => {
-    if (currentPopup && !currentPopup.closed) {
-      currentPopup.focus()
-      return
-    }
-    
-    openPopup(
-      keycloak.createLoginUrl({
+  const getLoginUrl = (): string => {
+    return keycloak.createLoginUrl({
         redirectUri: rewritePage("/login.html"),
       })
-    )    
-
-    showPopup = true
-  }
-
-  const openPopup = (url: string): void => {
-    const width = 400
-    const height = 600
-    const left = window.screenX + (window.innerWidth - width) / 2
-    const top = window.screenY + (window.innerHeight - height) / 2
-
-    currentPopup = window.open(
-      url,
-      "keycloak:authorize:popup",
-      `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`
-    )
-  }
-
-  const runPopup = async (popup: Window): Promise<Record<string, string>> => {
-    return new Promise((resolve, reject) => {
-      // Throw exception if popup is closed manually
-      const popupTimer = setInterval(() => {
-        if (popup.closed) {
-          window.removeEventListener("message", popupEventListener, false)
-          clearInterval(popupTimer)
-
-          reject(new Error("Authentication popup was closed manually."))
-        }
-      }, 1000)
-
-      // Wait for postMessage from popup if login is successful
-      const popupEventListener = function (event: MessageEvent): void {
-        if (event.origin !== window.location.origin) return
-        if (!Object.keys(event.data).includes("code")) return
-
-        window.removeEventListener("message", popupEventListener, false)
-        clearInterval(popupTimer)
-
-        popup.close()
-        resolve(event.data)
-      }
-
-      window.addEventListener("message", popupEventListener)
-    })
   }
 
   // Set up the response to Streamlit
@@ -109,17 +62,6 @@
     }
   }
 
-  const authenticateWithPopup = async (popup: Window | null): Promise<void> => {
-    if (!popup) {
-      throw new Error(
-        "Unable to open the authentication popup. Allow popups and refresh the page to proceed."
-      )        
-    }
-
-    await runPopup(popup)
-    await keycloak.login()
-  }
-
   const authenticate = async (): Promise<boolean> => {
     keycloak = new Keycloak({
       url: url,
@@ -137,32 +79,25 @@
     })
   }
 
-  afterUpdate(async () => {
-    Streamlit.setFrameHeight(200)
+  afterUpdate(() => {
+    Streamlit.setFrameHeight(clientHeight)
   })
 
   let keycloak: Keycloak
-  let currentPopup: Window | null
-  let showPopup = false
+  let clientHeight: number
 </script>
 
-{#await authenticate() then authenticated}
-  {#if !authenticated}
-    <div class="alert alert-warning">
-      <button type="button" class="btn btn-primary" on:click={createLoginPopup}>
-        <span>Sign in</span>
-      </button>
-      <span class="mx-3">Please sign in to your account.</span>
-      {#if showPopup}
-        {#await authenticateWithPopup(currentPopup) catch error}
-          <div class="alert alert-danger mt-3 mb-0">{error.message}</div>
-        {/await}
-      {/if}
+<div bind:clientHeight={clientHeight}>
+  {#await authenticate() then authenticated}
+    {#if !authenticated}
+      <LoginDialog 
+        loginUrl={getLoginUrl()} 
+        on:loggedin={() => {keycloak.login()}}
+      />
+    {/if}
+  {:catch}
+    <div class="alert alert-danger">
+      <span>Unable to connect to Keycloak using the current configuration.</span>
     </div>
-  {/if}
-{:catch}
-  <div class="alert alert-danger">
-    <span
-      >Unable to authenticate with Keycloak using the current configuration.</span>
-  </div>
-{/await}
+  {/await}
+</div>
