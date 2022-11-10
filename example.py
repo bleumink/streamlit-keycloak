@@ -6,7 +6,9 @@ keycloak = login(
     url="http://localhost:8080",
     realm="myrealm",
     client_id="myclient",
+    auto_refresh=True,
     init_options={"checkLoginIframe": False},
+    custom_labels={"errorPopupClosed": "You closed the popup!"}
 )
 
 if keycloak.authenticated:
