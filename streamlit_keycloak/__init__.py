@@ -60,6 +60,7 @@ def login(
     client_id: str,
     auto_refresh: bool = True,
     init_options: Optional[dict] = None,
+    custom_labels: Optional[dict] = None,
     key: Optional[str] = None,
 ) -> Keycloak:
     """Creates a new Keycloak component and authenticates.
@@ -78,6 +79,10 @@ def login(
     init_options: dict or None
         Optionally set initialization options for Keycloak. These are passed on to
         the init function in the frontend. See keycloak-js documentation for details.
+    custom_labels: dict or None
+        Optionally provide a dictionary containing alternative text to display
+        in the login dialog. The following keys should be set:
+        "labelButton", "labelLogin", "errorNoPopup", "errorPopupClosed" and "ErrorFatal"
     key: str or None
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will
@@ -103,6 +108,7 @@ def login(
         clientId=client_id,
         autoRefresh=auto_refresh,
         initOptions=init_options,
+        customLabels=custom_labels,
         key=key,
         default=default,
     )

@@ -1,20 +1,19 @@
 <script lang="ts">
   import LoginDialog from "./LoginDialog.svelte"
 
-  import { Streamlit, setStreamlitLifecycle } from "./streamlit"
-  import { afterUpdate } from "svelte"
+  import { afterUpdate, onMount, setContext } from "svelte"
+  import { Streamlit } from "./streamlit"
 
   import Keycloak from "keycloak-js"
   import type { KeycloakInitOptions } from "keycloak-js"
-  
-
-  setStreamlitLifecycle()
+  import { LabelMap, defaultLabels } from "./localization"
 
   export let url: string
   export let realm: string
   export let clientId: string
   export let autoRefresh: boolean = true
   export let initOptions: KeycloakInitOptions = {}
+  export let customLabels: LabelMap = {}
 
   const rewritePage = (newPage: string): string => {
     return (
@@ -25,8 +24,8 @@
 
   const getLoginUrl = (): string => {
     return keycloak.createLoginUrl({
-        redirectUri: rewritePage("/login.html"),
-      })
+      redirectUri: rewritePage("/login.html"),
+    })
   }
 
   // Set up the response to Streamlit
@@ -79,25 +78,38 @@
     })
   }
 
+  onMount(() => {
+    Streamlit.setFrameHeight()
+  })
+
   afterUpdate(() => {
     Streamlit.setFrameHeight(clientHeight)
   })
 
   let keycloak: Keycloak
   let clientHeight: number
+
+  const labels = {
+    ...defaultLabels,
+    ...customLabels,
+  }
+
+  setContext("localization", labels)
 </script>
 
-<div bind:clientHeight={clientHeight}>
+<div bind:clientHeight>
   {#await authenticate() then authenticated}
     {#if !authenticated}
-      <LoginDialog 
-        loginUrl={getLoginUrl()} 
-        on:loggedin={() => {keycloak.login()}}
+      <LoginDialog
+        loginUrl={getLoginUrl()}
+        on:loggedin={() => {
+          keycloak.login()
+        }}
       />
     {/if}
   {:catch}
     <div class="alert alert-danger">
-      <span>Unable to connect to Keycloak using the current configuration.</span>
+      <span>{labels.errorFatal}</span>
     </div>
   {/await}
 </div>
