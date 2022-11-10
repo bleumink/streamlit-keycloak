@@ -15,13 +15,15 @@ Frontend authentication like this can only be done with clients that have their 
 
 ## Example
 ```python
+from dataclasses import asdict
 from streamlit_keycloak import login
 import streamlit as st
 
 
 def main():
     st.subheader(f"Welcome {keycloak.user_info['preferred_username']}!")
-    st.write(f"Here is your OAuth2 token: {keycloak.access_token}")
+    st.write(f"Here is your user information:")
+    st.write(asdict(keycloak))
 
 
 st.title("Streamlit Keycloak example")
