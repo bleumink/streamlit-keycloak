@@ -5,7 +5,7 @@
 `pip install streamlit-keycloak`
 
 ## Usage
-Provide the URL to your Keycloak server, the realm and client and the component will perform the authentication when the app is rendered. First it will attempt to silently authenticate using single sign-on. If this fails, the component will open a popup to the Keycloak login page (note: so you must allow popups for this to work).
+Provide the URL to your Keycloak server, the realm and client and the component will perform the authentication when the app is rendered. First it will attempt to silently authenticate using single sign-on. If this fails, a dialog will appear from which you can open a popup to the Keycloak login page.
 
 When authentication is successful, the component returns a dataclass containing the authentication state, an access token, which can be used to access other restricted resources, a refresh token and a user info object, containing e.g. the username and group memberships. If your configuration provides refresh tokens, the access token can be automatically refreshed when it expires.
 
@@ -23,8 +23,8 @@ def main():
     st.subheader(f"Welcome {keycloak.user_info['preferred_username']}!")
     st.write(f"Here is your OAuth2 token: {keycloak.access_token}")
 
-st.title("Streamlit Keycloak example")
 
+st.title("Streamlit Keycloak example")
 keycloak = login(
     url="http://localhost:8080",
     realm="myrealm",

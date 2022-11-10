@@ -8,5 +8,9 @@
             const hashParams = new URLSearchParams(window.location.hash.substring(1))                        
             window.opener.postMessage(Object.fromEntries(hashParams.entries()), window.opener.location.origin)
         </script>
+        <span>
+            You have successfully logged in. 
+            If you were redirected here, feel free to close this window and refresh the page to continue.
+        </span>
     </body>
 </html>
