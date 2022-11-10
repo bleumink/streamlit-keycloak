@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="streamlit-keycloak",
-    version="0.2.0",
+    version="0.2.1",
     author="Gideon Bleumink",
     author_email="",
     description="Keycloak authentication for Streamlit",
