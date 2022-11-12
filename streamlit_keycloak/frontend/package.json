@@ -1,6 +1,6 @@
 {
   "name": "streamlit-keycloak",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
