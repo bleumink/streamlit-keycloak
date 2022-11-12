@@ -71,18 +71,18 @@
     setKeycloakEventListeners(autoRefresh)
 
     // Check if user is already logged in
-    return await keycloak.init({
+    return keycloak.init({
       ...initOptions,
       onLoad: "check-sso",
       silentCheckSsoRedirectUri: rewritePage("/check-sso.html"),
     })
   }
 
-  onMount(() => {
+  onMount((): void => {
     Streamlit.setFrameHeight()
   })
 
-  afterUpdate(() => {
+  afterUpdate((): void => {
     Streamlit.setFrameHeight(clientHeight)
   })
 
