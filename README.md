@@ -70,11 +70,11 @@ keycloak = login(
     realm="myrealm",
     client_id="myclient",
     custom_labels={
-        "labelButton": "Aanmelden",
-        "labelLogin": "Meld u aan met uw account.",
-        "errorNoPopup": "Er kon geen popupvenster geopend worden. Sta popups toe en ververs de pagina om verder te gaan.",
-        "errorPopupClosed": "De authenticatiepopup was handmatig gesloten.",
-        "errorFatal": "Met de huidige configuratie kon geen verbinding met Keycloak gemaakt worden."
+        "labelButton": "Sign in",
+        "labelLogin": "Please sign in to your account.",
+        "errorNoPopup": "Unable to open the authentication popup. Allow popups and refresh the page to proceed.",
+        "errorPopupClosed": "Authentication popup was closed manually.",
+        "errorFatal": "Unable to connect to Keycloak using the current configuration."   
     }
 )
 ```
