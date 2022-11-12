@@ -82,7 +82,7 @@ def login(
     custom_labels: dict or None
         Optionally provide a dictionary containing alternative text to display
         in the login dialog. The following keys should be set:
-        "labelButton", "labelLogin", "errorNoPopup", "errorPopupClosed" and "ErrorFatal"
+        "labelButton", "labelLogin", "errorNoPopup", "errorPopupClosed" and "errorFatal"
     key: str or None
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will

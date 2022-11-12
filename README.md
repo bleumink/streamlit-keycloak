@@ -13,7 +13,7 @@ So far the component has not been tested in a wide variety of environments. So i
 
 Frontend authentication like this can only be done with clients that have their access type set to ‘public’ as their is no way to securely provide the client secret from the browser.
 
-## Example
+## Examples
 ```python
 from dataclasses import asdict
 from streamlit_keycloak import login
@@ -37,6 +37,47 @@ if keycloak.authenticated:
     main()
 ```
 ![streamlit-keycloak showcase|639x663](https://github.com/bleumink/streamlit-keycloak/blob/master/example.gif?raw=true)
+
+By default your access tokens will be refreshed when they expire. Refreshing the tokens will cause your app to be rerendered. If this is not desired, this behaviour can be disabled using the ```auto_refresh``` parameter.
+
+```python
+keycloak = login(    
+    url="http://localhost:8080",
+    realm="myrealm",
+    client_id="myclient",
+    auto_refresh=False
+)
+```
+
+Depending on your Keycloak configuration, you might want to specify additional parameters to the Keycloak. These can be provided using the ```init_options``` parameter and will be passed to the init function in the frontend. See the [keycloak-js documentation](https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter) for details.
+
+```python
+keycloak = login(    
+    url="http://localhost:8080",
+    realm="myrealm",
+    client_id="myclient",
+    init_options={
+        "checkLoginIframe": False
+    }
+)
+```
+
+All text in the login dialog can be customized using the ```custom_labels``` parameter, by providing a dictionary with specific keys set.
+
+```python
+keycloak = login(    
+    url="http://localhost:8080",
+    realm="myrealm",
+    client_id="myclient",
+    custom_labels={
+        "labelButton": "Aanmelden",
+        "labelLogin": "Meld u aan met uw account.",
+        "errorNoPopup": "Er kon geen popupvenster geopend worden. Sta popups toe en ververs de pagina om verder te gaan.",
+        "errorPopupClosed": "De authenticatiepopup was handmatig gesloten.",
+        "errorFatal": "Met de huidige configuratie kon geen verbinding met Keycloak gemaakt worden."
+    }
+)
+```
 
 ## Credits
 Many thanks to the authors of the [streamlit-auth0](https://github.com/conradbez/streamlit-auth0) and [auth0-spa-js](https://github.com/auth0/auth0-spa-js) packages for inspiring a large part of the approach.
