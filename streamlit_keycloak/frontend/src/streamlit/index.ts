@@ -1,10 +1,10 @@
-import type { RenderData as RenderData_ } from "./streamlit";
-import WithStreamlitConnection from "./WithStreamlitConnection.svelte";
+import type { RenderData as RenderData_ } from './streamlit'
+import WithStreamlitConnection from './WithStreamlitConnection.svelte'
 
-export { ArrowTable } from "./ArrowTable";
-export { Streamlit } from "./streamlit";
+export { ArrowTable } from './ArrowTable'
+export { Streamlit } from './streamlit'
 
-export { setStreamlitLifecycle } from "./setStreamlitLifecycle";
-export { WithStreamlitConnection };
+export { setStreamlitLifecycle } from './setStreamlitLifecycle'
+export { WithStreamlitConnection }
 
-export type RenderData = RenderData_;
+export type RenderData = RenderData_
