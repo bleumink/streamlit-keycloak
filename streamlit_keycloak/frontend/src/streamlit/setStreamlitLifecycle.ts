@@ -1,5 +1,5 @@
-import { onMount, afterUpdate } from "svelte";
-import { Streamlit } from "./streamlit";
+import { onMount, afterUpdate } from 'svelte'
+import { Streamlit } from './streamlit'
 
 /**
  * [Optional] Set Streamlit Svelte Lifecycle functions
@@ -10,17 +10,17 @@ import { Streamlit } from "./streamlit";
  * so that your plugin properly resizes.
  */
 export const setStreamlitLifecycle = (): void => {
-  onMount((): void => {
-    // Finally, tell Streamlit to update our initial height. We omit the
-    // `height` parameter here to have it default to our scrollHeight.
-    Streamlit.setFrameHeight();
-  });
+    onMount((): void => {
+        // Finally, tell Streamlit to update our initial height. We omit the
+        // `height` parameter here to have it default to our scrollHeight.
+        Streamlit.setFrameHeight()
+    })
 
-  afterUpdate((): void => {
-    // We tell Streamlit to update our frameHeight after each update, in
-    // case it has changed. (This isn't strictly necessary for the example
-    // because our height stays fixed, but this is a low-cost function, so
-    // there's no harm in doing it redundantly.)
-    Streamlit.setFrameHeight();
-  });
-};
+    afterUpdate((): void => {
+        // We tell Streamlit to update our frameHeight after each update, in
+        // case it has changed. (This isn't strictly necessary for the example
+        // because our height stays fixed, but this is a low-cost function, so
+        // there's no harm in doing it redundantly.)
+        Streamlit.setFrameHeight()
+    })
+}
