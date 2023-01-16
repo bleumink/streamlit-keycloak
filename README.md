@@ -79,6 +79,19 @@ keycloak = login(
 )
 ```
 
+## Getting started with Keycloak
+Setting up your own Keycloak instance can be [This guide should get you started.](https://www.keycloak.org/getting-started/getting-started-docker)
+
+### TLDR
+- Create your Keycloak instance
+- Create a realm
+- Create a client
+    - Keep the access type public
+    - Set a valid redirect uri, e.g. https://hostname:port/*
+    - Set valid web origins, e.g. https://hostname
+- Create a user
+    - Set a password for it
+
 ## Credits
 Many thanks to the authors of the [streamlit-auth0](https://github.com/conradbez/streamlit-auth0) and [auth0-spa-js](https://github.com/auth0/auth0-spa-js) packages for inspiring a large part of the approach.
 
