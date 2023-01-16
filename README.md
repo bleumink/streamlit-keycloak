@@ -80,7 +80,7 @@ keycloak = login(
 ```
 
 ## Getting started with Keycloak
-Setting up your own Keycloak instance can be [This guide should get you started.](https://www.keycloak.org/getting-started/getting-started-docker)
+Setting up your own Keycloak instance can be tricky. [This guide should get you started.](https://www.keycloak.org/getting-started/getting-started-docker)
 
 ### TLDR
 - Create your Keycloak instance
