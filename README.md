@@ -93,7 +93,7 @@ Setting up your own Keycloak instance can be tricky. [This guide should get you 
     - Set a password for it
 
 A minimum configuration should look something like this: 
-[keycloak configuration](https://github.com/bleumink/streamlit-keycloak/blob/master/keycloak.png?raw=true)
+![keycloak configuration](https://github.com/bleumink/streamlit-keycloak/blob/master/keycloak.png?raw=true)
 
 ## Credits
 Many thanks to the authors of the [streamlit-auth0](https://github.com/conradbez/streamlit-auth0) and [auth0-spa-js](https://github.com/auth0/auth0-spa-js) packages for inspiring a large part of the approach.
