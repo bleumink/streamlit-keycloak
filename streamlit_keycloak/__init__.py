@@ -10,6 +10,7 @@ class Keycloak:
     access_token: Optional[str] = None
     refresh_token: Optional[str] = None
     user_info: Optional[dict] = None
+    id_token: Optional[str] = None
 
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
@@ -62,6 +63,7 @@ def login(
     init_options: Optional[dict] = None,
     custom_labels: Optional[dict] = None,
     key: Optional[str] = None,
+    login_options: Optional[dict] = None,
 ) -> Keycloak:
     """Creates a new Keycloak component and authenticates.
 
@@ -87,6 +89,9 @@ def login(
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will
         be re-mounted in the Streamlit frontend and lose its current state.
+    login_options: dict or None
+        Optionally set login options for Keycloak. These are passed on to
+        the login function in the frontend. See keycloak-js documentation for details.
 
     Returns
     -------
@@ -111,6 +116,7 @@ def login(
         customLabels=custom_labels,
         key=key,
         default=default,
+        loginOptions=login_options,
     )
 
     return Keycloak(**keycloak)
