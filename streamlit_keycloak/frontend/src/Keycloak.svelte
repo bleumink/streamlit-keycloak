@@ -5,7 +5,7 @@
     import { Streamlit } from './streamlit'
 
     import Keycloak from 'keycloak-js'
-    import type { KeycloakInitOptions } from 'keycloak-js'
+    import type { KeycloakInitOptions, KeycloakLoginOptions } from 'keycloak-js'
     import { LabelMap, defaultLabels } from './localization'
 
     export let url: string
@@ -13,6 +13,7 @@
     export let clientId: string
     export let autoRefresh: boolean = true
     export let initOptions: KeycloakInitOptions = {}
+    export let loginOptions: KeycloakLoginOptions = {}
     export let customLabels: LabelMap = {}
 
     const rewritePage = (newPage: string): string => {
@@ -41,6 +42,7 @@
                 access_token: keycloak.token,
                 refresh_token: keycloak.refreshToken,
                 user_info: keycloak.userInfo,
+                id_token: keycloak.idToken,
             }
         } else {
             value = { authenticated: false }
@@ -103,7 +105,7 @@
             <LoginDialog
                 loginUrl={getLoginUrl()}
                 on:loggedin={() => {
-                    keycloak.login()
+                    keycloak.login(loginOptions)
                 }}
             />
         {/if}
